@@ -1,0 +1,17 @@
+{
+  "name": "fullstackopen_chapter_3",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000F\u0000u\u0000l\u0000l\u0000S\u0000t\u0000a\u0000c\u0000k\u0000O\u0000p\u0000e\u0000n\u0000_\u0000C\u0000h\u0000a\u0000p\u0000t\u0000e\u0000r\u0000_\u00003\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.0",
+    "nodemon": "^3.1.4"
+  }
+}

@@ -1,9 +1,15 @@
 const express = require('express')
+const cors = require('cors')
+const morgan = require('morgan')
 const app = express()
 
 app.use(express.json())
+app.use(cors())
+morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
+app.use(morgan(':method :url :status :body'))
+app.use(express.static('dist'))
 
-let notes = [
+let persons = [
     {
         id: 1,
         name: 'Arto Hellas',
@@ -27,14 +33,68 @@ let notes = [
 ]
 
 app.get('/', (req, res) => {
-    res.send('<h1>Hello World!</h1>')
+    res.send('<h1>I am not broken :)</h1>')
 })
 
 app.get('/api/persons', (req, res) => {
-    res.json(notes)
+    res.json(persons)
 })
 
+app.get('/info', (req, res) => {
+    const date = new Date()
+    res.send(`
+        <p>Phonebook has info for ${persons.length} people</p>
+        <p>${date}</p>
+    `)
+})
 
-const PORT = 3001
-app.listen(PORT)
-console.log(`Server running on port ${PORT}`)
+app.get('/api/persons/:id', (req, res) => {
+    const id = Number(req.params.id)
+    const person = persons.find(person => person.id === id)
+    if (person){
+        res.json(person)
+    } else {
+        res.status(404).end()
+    }
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+    const id = req.params.id
+    persons = persons.filter(person => person.id !== id)
+    res.status(204).end()
+})
+
+app.post('/api/persons', (req, res) => {
+    const body = req.body
+
+    if(!body.name){
+        return res.status(400).json({
+            error: 'Name missing'
+        })
+    }else if(!body.number){
+        return res.status(400).json({
+            error: 'Number missing'
+        })
+    }
+
+    if(persons.find(person => person.name === body.name)){
+        return res.status(400).json({
+            error: 'Name must be unique'
+        })
+    }
+
+    const person = {
+        id: Math.floor(Math.random() * 1000),
+        name: body.name,
+        number: body.number
+    }
+    
+    persons = persons.concat(person)
+
+    res.json(person)
+})
+
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
